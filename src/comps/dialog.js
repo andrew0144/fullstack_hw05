@@ -29,7 +29,7 @@ export default function ResponsiveDialog(props) {
         <>
             {/*title*/}
             <DialogTitle sx={{ bgcolor: 'primary.dark', color: 'white' }}>
-                <AddCircleIcon /> Add Task
+                <AddCircleIcon sx={{ verticalAlign: "-5px" }} /> Add Task
             </DialogTitle>
             {/*content*/}
             <DialogContent>
@@ -65,7 +65,7 @@ export default function ResponsiveDialog(props) {
                 </Button>
                 {/*cancel button*/}
                 <Button onClick={cancel} variant="contained" color='error' sx={{ bgcolor: '#f44336', width: 100 }}>
-                    <i className="fa fa-fw fa-ban"></i>&nbsp;Cancel
+                    <i className="fa fa-fw fa-lg fa-ban"></i>&nbsp;Cancel
                 </Button>
             </DialogActions>
         </>
