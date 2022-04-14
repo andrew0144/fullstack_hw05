@@ -7,6 +7,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { TextField, Radio, RadioGroup, FormControlLabel, FormLabel, FormControl } from '@mui/material';
 //components
 import DateTime from './dateTime';
 
@@ -32,9 +33,29 @@ export default function ResponsiveDialog(props) {
             </DialogTitle>
             {/*content*/}
             <DialogContent>
+                {/*title*/}
+                <br /><br />
+                <TextField id="outlined-basic" label="Title" variant="outlined" fullWidth />
+                {/*description*/}
+                <br /><br />
+                <TextField id="outlined-basic" label="Description" variant="outlined" fullWidth />
                 {/*deadline*/}
                 <br /><br />
                 <DateTime dataFromParent={deadline} dataToParent={deadline} />
+                {/*priority*/}
+                <br /><br />
+                <FormControl>
+                    <FormLabel id="priority-label">Priority</FormLabel>
+                    <RadioGroup
+                        row
+                        aria-labelledby="priority-label"
+                        name="row-radio-buttons-group"
+                    >
+                        <FormControlLabel value="low" control={<Radio />} label="Low" />
+                        <FormControlLabel value="medium" control={<Radio />} label="Medium" />
+                        <FormControlLabel value="high" control={<Radio />} label="High" />
+                    </RadioGroup>
+                </FormControl>
             </DialogContent>
             {/*action buttons*/}
             <DialogActions sx={{ bgcolor: 'white' }}>
