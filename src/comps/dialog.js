@@ -33,10 +33,8 @@ export default function ResponsiveDialog(props) {
     };
 
     let add = () => {
-        console.log(checkDuplicateTitle());
         if (checkDuplicateTitle()) {
             setDuplicateTitle(true);
-            console.log(duplicateTitle);
             return;
         }
         if (titleError || descriptionError) return;
@@ -46,7 +44,8 @@ export default function ResponsiveDialog(props) {
                 title: document.getElementById("title").value,
                 description: document.getElementById("description").value,
                 deadline: deadline,
-                priority: radioSelection
+                priority: radioSelection,
+                isComplete: false
             }
         });
     };
@@ -70,12 +69,10 @@ export default function ResponsiveDialog(props) {
         if (checkDuplicateTitle()) {
             setTitleError(true);
             setDuplicateTitle(true);
-            console.log("titleError: " + titleError);
-            console.log("duplicateTitle: " + duplicateTitle);
         }
 
     }
-
+    // updates the date when date picker is changed
     function updateDate(date) {
         setDeadline(moment(date).format('L'));
     }

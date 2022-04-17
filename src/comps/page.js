@@ -35,6 +35,14 @@ export default class page extends Component {
             open: false
         };
     }
+
+    // deletes a row from rows in the state
+    deleteRow(index) {
+        let copy = this.state.rows.slice();
+        copy.splice(index, 1);
+        this.setState({ rows: copy });
+    }
+
     // add task
     addTask() {
         this.setState({ open: true });
@@ -43,15 +51,23 @@ export default class page extends Component {
     // submit task
     submitTask(data) {
         console.log(this.state.rows);
-        this.setState(prevState => { rows: prevState.rows.push(data) });
+        this.setState((prevState) => ({ rows: prevState.rows.concat(data) }));
         this.setState({ open: false });
     };
 
+
+    // checks for duplicate titles
     isDuplicateTitle(data) {
         let currTitle = data.title;
         let result = (this.state.rows.filter(row => row.title === currTitle).length > 0);
-        console.log("isDuplicateTitle: " + result);
         return result;
+    }
+
+    // toggles a row's isComplete
+    toggleIsComplete(index) {
+        let copy = this.state.rows.slice();
+        copy[index].isComplete = !copy[index].isComplete;
+        this.setState({ rows: copy });
     }
 
     //callback from dialog input
@@ -115,12 +131,14 @@ export default class page extends Component {
                                             <TableCell align="center">{row.description}</TableCell>
                                             <TableCell align="center">{row.deadline}</TableCell>
                                             <TableCell align="center">{row.priority}</TableCell>
-                                            <TableCell align="center"><Checkbox /></TableCell>
                                             <TableCell align="center">
-                                                <Button variant="contained" startIcon={<i class="fa fa-pencil-square-o" aria-hidden="true"></i>}>
+                                                <Checkbox checked={row.isComplete ? true : false} onClick={() => this.toggleIsComplete(index)} />
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                {!row.isComplete ? <div><Button variant="contained" startIcon={<i className="fa fa-pencil-square-o" aria-hidden="true"></i>}>
                                                     UPDATE
-                                                </Button>
-                                                <Button variant="contained" color="error" startIcon={<CancelIcon />} sx={{ bgcolor: '#f44336' }}>
+                                                </Button></div> : <div></div>}
+                                                <Button onClick={() => this.deleteRow(index)} variant="contained" color="error" startIcon={<CancelIcon />} sx={{ bgcolor: '#f44336' }}>
                                                     DELETE&nbsp;
                                                 </Button>
                                             </TableCell>
