@@ -25,24 +25,42 @@ export default class page extends Component {
         super(props);
         this.state = {
             task: {
+                title: "",
+                description: "",
                 deadline: moment()
             },
             rows: [],
             open: false
         };
     }
-
-    //add task
+    // add task
     addTask() {
         this.setState({ open: true });
+    }
+
+    // submit task
+    submitTask(data) {
+        console.log(this.state.rows);
+        this.setState(prevState => { rows: prevState.rows.push(data) });
+        this.setState({ open: false });
     };
+
+    ensureDistinctTitle(data) {
+        let currTitle = data.title;
+        let result = (this.state.rows.filter(row => row === currTitle).length > 0);
+        return result;
+    }
 
     //callback from dialog input
     dialogCallback = (data) => {//functional syntax intentional
-        if (data.action === `submit`) {//submitted
-            toastr.success(`Task added successfully!`, ``, { 'closeButton': true, positionClass: 'toast-bottom-right' });
-        } else if (data.action === `cancel`) {//cancelled
+        if (data.action === 'submit') {//submitted
+            this.submitTask(data.data); // don't send the action as well
+            toastr.success('Task added successfully!', '', { 'closeButton': true, positionClass: 'toast-bottom-right' });
+        } else if (data.action === 'cancel') {//cancelled
             this.setState({ open: false });
+        }
+        else if (data.action === 'checkDupTitle') {
+            return this.ensureDistinctTitle(data);
         }
     }
 
@@ -55,7 +73,8 @@ export default class page extends Component {
                     onClose={() => this.dialogCallback()}>
                     <Dialog
                         parentCallback={this.dialogCallback}
-                        dataFromParent={this.state.task} >
+                        dataFromParent={this.state.task}
+                        addErrors={this.state.errors}>
                     </Dialog>
                 </DiaWrap>
                 {/*master card*/}
@@ -93,8 +112,8 @@ export default class page extends Component {
                                             <TableCell align="center">{row.description}</TableCell>
                                             <TableCell align="center">{row.deadline}</TableCell>
                                             <TableCell align="center">{row.priority}</TableCell>
-                                            <TableCell align="center">X</TableCell>
-                                            <TableCell align="center">X</TableCell>
+                                            <TableCell align="center">burgie</TableCell>
+                                            <TableCell align="center">bott</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

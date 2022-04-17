@@ -10,11 +10,16 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { TextField, Radio, RadioGroup, FormControlLabel, FormLabel, FormControl } from '@mui/material';
 //components
 import DateTime from './dateTime';
+import { compareAsc } from 'date-fns';
+import { render } from '@testing-library/react';
 
 //master export
 export default function ResponsiveDialog(props) {
     //variables
     let [deadline] = React.useState(props.dataFromParent.deadline);
+    let [titleError, setTitleError] = React.useState(true);
+    let [descriptionError, setDescriptionError] = React.useState(true);
+    let [duplicateTitle, setDuplicateTitle] = React.useState(false);
 
     //cancel
     let cancel = () => {
@@ -23,6 +28,40 @@ export default function ResponsiveDialog(props) {
             data: {}
         });
     };
+
+    let add = () => {
+        console.log(checkDuplicateTitle());
+        if (checkDuplicateTitle()) setDuplicateTitle(true);
+        if (titleError || descriptionError) return;
+        props.parentCallback({
+            action: 'submit',
+            data: {
+                title: document.getElementById("title").value,
+                description: document.getElementById("description").value,
+                deadline: "placeholder-deadline",
+                priority: document.getElementById("priority").value
+            }
+        });
+        console.log(props);
+    };
+
+    // checks if the title textfield is a duplicate title
+    let checkDuplicateTitle = () => {
+        return props.parentCallback({
+            action: 'checkDupTitle',
+            data: { title: document.getElementById("title").value }
+        });
+    }
+
+    let validateEmpty = () => {
+        setDuplicateTitle(false); // set it to false, don't overuse callbacks
+        let taskTitle = document.getElementById("title");
+        let taskDescription = document.getElementById("description");
+        if (taskTitle.value === "") setTitleError(true);
+        else setTitleError(false);
+        if (taskDescription.value === "") setDescriptionError(true);
+        else setDescriptionError(false);
+    }
 
     //return master object
     return (
@@ -35,10 +74,10 @@ export default function ResponsiveDialog(props) {
             <DialogContent>
                 {/*title*/}
                 <br /><br />
-                <TextField id="outlined-basic" label="Title" variant="outlined" fullWidth />
+                <TextField onChange={validateEmpty} error={titleError} helperText={titleError ? duplicateTitle ? "Task title already exists!" : "Title is Required!" : ''} id="title" label="Title" variant="outlined" fullWidth />
                 {/*description*/}
                 <br /><br />
-                <TextField id="outlined-basic" label="Description" variant="outlined" fullWidth />
+                <TextField onChange={validateEmpty} error={descriptionError} helperText={descriptionError ? "Description is Required!" : ''} id="description" label="Description" variant="outlined" fullWidth />
                 {/*deadline*/}
                 <br /><br />
                 <DateTime dataFromParent={deadline} dataToParent={deadline} />
@@ -47,8 +86,10 @@ export default function ResponsiveDialog(props) {
                 <FormControl>
                     <FormLabel id="priority-label">Priority</FormLabel>
                     <RadioGroup
+                        id="priority"
                         row
                         aria-labelledby="priority-label"
+                        defaultValue="medium"
                         name="row-radio-buttons-group"
                     >
                         <FormControlLabel value="low" control={<Radio />} label="Low" />
@@ -60,7 +101,7 @@ export default function ResponsiveDialog(props) {
             {/*action buttons*/}
             <DialogActions sx={{ bgcolor: 'white' }}>
                 {/*add button*/}
-                <Button onClick={cancel} variant="contained" color='primary' sx={{ width: 100 }}>
+                <Button onClick={add} variant="contained" color='primary' sx={{ width: 100 }}>
                     <AddCircleIcon />&nbsp;Add
                 </Button>
                 {/*cancel button*/}
