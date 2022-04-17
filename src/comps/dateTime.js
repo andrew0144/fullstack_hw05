@@ -11,13 +11,18 @@ import DatePicker from '@mui/lab/DatePicker';
 //master export
 export default function BasicDatePicker(props) {
   let [date, setDate] = React.useState(props.dataFromParent);
+
+
   //master return
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} >
       <DatePicker
         label="Deadline"
         value={date}
-        onChange={e => { setDate(e) }}
+        onChange={e => {
+          props.parentCallback(e);
+          setDate(e);
+        }}
         renderInput={(params) => <TextField {...params} fullWidth />}
       />
     </LocalizationProvider>

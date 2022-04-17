@@ -12,11 +12,13 @@ import { TextField, Radio, RadioGroup, FormControlLabel, FormLabel, FormControl 
 import DateTime from './dateTime';
 import { compareAsc } from 'date-fns';
 import { render } from '@testing-library/react';
+//javascript
+import moment from 'moment';
 
 //master export
 export default function ResponsiveDialog(props) {
     //variables
-    let [deadline] = React.useState(props.dataFromParent.deadline);
+    let [deadline, setDeadline] = React.useState(props.dataFromParent.deadline);
     let [titleError, setTitleError] = React.useState(true);
     let [descriptionError, setDescriptionError] = React.useState(true);
     let [duplicateTitle, setDuplicateTitle] = React.useState(false);
@@ -43,7 +45,7 @@ export default function ResponsiveDialog(props) {
             data: {
                 title: document.getElementById("title").value,
                 description: document.getElementById("description").value,
-                deadline: "placeholder-deadline",
+                deadline: deadline,
                 priority: radioSelection
             }
         });
@@ -74,6 +76,10 @@ export default function ResponsiveDialog(props) {
 
     }
 
+    function updateDate(date) {
+        setDeadline(moment(date).format('L'));
+    }
+
     // changes state on radio button changes
     function radioChange(event) {
         let val = event.target.value;
@@ -98,7 +104,7 @@ export default function ResponsiveDialog(props) {
                 <TextField onChange={validateEmpty} error={descriptionError} helperText={descriptionError ? "Description is Required!" : ''} id="description" label="Description" variant="outlined" fullWidth />
                 {/*deadline*/}
                 <br /><br />
-                <DateTime dataFromParent={deadline} dataToParent={deadline} />
+                <DateTime dataFromParent={deadline} parentCallback={updateDate} />
                 {/*priority*/}
                 <br /><br />
                 <FormControl>

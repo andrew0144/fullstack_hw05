@@ -29,7 +29,7 @@ export default class page extends Component {
             task: {
                 title: "",
                 description: "",
-                deadline: moment()
+                deadline: moment().format('L')
             },
             rows: [],
             open: false
