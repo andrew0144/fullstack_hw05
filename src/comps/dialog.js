@@ -31,7 +31,11 @@ export default function ResponsiveDialog(props) {
 
     let add = () => {
         console.log(checkDuplicateTitle());
-        if (checkDuplicateTitle()) setDuplicateTitle(true);
+        if (checkDuplicateTitle()) {
+            setDuplicateTitle(true);
+            console.log(duplicateTitle);
+            return;
+        }
         if (titleError || descriptionError) return;
         props.parentCallback({
             action: 'submit',
@@ -42,7 +46,6 @@ export default function ResponsiveDialog(props) {
                 priority: document.getElementById("priority").value
             }
         });
-        console.log(props);
     };
 
     // checks if the title textfield is a duplicate title
@@ -54,13 +57,20 @@ export default function ResponsiveDialog(props) {
     }
 
     let validateEmpty = () => {
-        setDuplicateTitle(false); // set it to false, don't overuse callbacks
         let taskTitle = document.getElementById("title");
         let taskDescription = document.getElementById("description");
         if (taskTitle.value === "") setTitleError(true);
         else setTitleError(false);
         if (taskDescription.value === "") setDescriptionError(true);
         else setDescriptionError(false);
+
+        if (checkDuplicateTitle()) {
+            setTitleError(true);
+            setDuplicateTitle(true);
+            console.log("titleError: " + titleError);
+            console.log("duplicateTitle: " + duplicateTitle);
+        }
+
     }
 
     //return master object

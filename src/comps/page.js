@@ -45,9 +45,10 @@ export default class page extends Component {
         this.setState({ open: false });
     };
 
-    ensureDistinctTitle(data) {
+    isDuplicateTitle(data) {
         let currTitle = data.title;
-        let result = (this.state.rows.filter(row => row === currTitle).length > 0);
+        let result = (this.state.rows.filter(row => row.title === currTitle).length > 0);
+        console.log("isDuplicateTitle: " + result);
         return result;
     }
 
@@ -60,7 +61,7 @@ export default class page extends Component {
             this.setState({ open: false });
         }
         else if (data.action === 'checkDupTitle') {
-            return this.ensureDistinctTitle(data);
+            return this.isDuplicateTitle(data.data);
         }
     }
 
