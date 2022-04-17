@@ -20,6 +20,7 @@ export default function ResponsiveDialog(props) {
     let [titleError, setTitleError] = React.useState(true);
     let [descriptionError, setDescriptionError] = React.useState(true);
     let [duplicateTitle, setDuplicateTitle] = React.useState(false);
+    let [radioSelection, setRadioSelection] = React.useState("med");
 
     //cancel
     let cancel = () => {
@@ -43,7 +44,7 @@ export default function ResponsiveDialog(props) {
                 title: document.getElementById("title").value,
                 description: document.getElementById("description").value,
                 deadline: "placeholder-deadline",
-                priority: document.getElementById("priority").value
+                priority: radioSelection
             }
         });
     };
@@ -71,6 +72,13 @@ export default function ResponsiveDialog(props) {
             console.log("duplicateTitle: " + duplicateTitle);
         }
 
+    }
+
+    // changes state on radio button changes
+    function radioChange(event) {
+        let val = event.target.value;
+        if (val === "medium") val = "med";
+        setRadioSelection(val);
     }
 
     //return master object
@@ -102,9 +110,9 @@ export default function ResponsiveDialog(props) {
                         defaultValue="medium"
                         name="row-radio-buttons-group"
                     >
-                        <FormControlLabel value="low" control={<Radio />} label="Low" />
-                        <FormControlLabel value="medium" control={<Radio />} label="Medium" />
-                        <FormControlLabel value="high" control={<Radio />} label="High" />
+                        <FormControlLabel onChange={radioChange} value="low" control={<Radio />} label="Low" />
+                        <FormControlLabel onChange={radioChange} value="medium" control={<Radio />} label="Medium" />
+                        <FormControlLabel onChange={radioChange} value="high" control={<Radio />} label="High" />
                     </RadioGroup>
                 </FormControl>
             </DialogContent>
