@@ -13,11 +13,13 @@ import DiaWrap from '@mui/material/Dialog';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
+import CancelIcon from '@mui/icons-material/Cancel';
 //components
 import Dialog from './dialog';
 //javascript
 import moment from 'moment';
 import toastr from 'toastr';
+import { Checkbox } from "@mui/material";
 //master export
 export default class page extends Component {
     //constructor
@@ -113,8 +115,15 @@ export default class page extends Component {
                                             <TableCell align="center">{row.description}</TableCell>
                                             <TableCell align="center">{row.deadline}</TableCell>
                                             <TableCell align="center">{row.priority}</TableCell>
-                                            <TableCell align="center">burgie</TableCell>
-                                            <TableCell align="center">bott</TableCell>
+                                            <TableCell align="center"><Checkbox /></TableCell>
+                                            <TableCell align="center">
+                                                <Button variant="contained" startIcon={<i class="fa fa-pencil-square-o" aria-hidden="true"></i>}>
+                                                    UPDATE
+                                                </Button>
+                                                <Button variant="contained" color="error" startIcon={<CancelIcon />} sx={{ bgcolor: '#f44336' }}>
+                                                    DELETE&nbsp;
+                                                </Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
