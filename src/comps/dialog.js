@@ -73,6 +73,7 @@ export default function ResponsiveDialog(props) {
         });
     }
 
+    // makes sure there aren't any empty fields in the dialog
     let validateEmpty = () => {
         let taskTitle = document.getElementById("title");
         let taskDescription = document.getElementById("description");

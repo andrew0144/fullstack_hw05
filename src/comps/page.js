@@ -54,6 +54,7 @@ export default class page extends Component {
         copy.splice(index, 1, data);
         this.setState({ rows: copy });
         this.setState({ editOpen: false });
+        toastr.success('Task updated successfully!', '', { 'closeButton': true, positionClass: 'toast-bottom-right' });
     }
 
     // deletes a row from rows in the state
@@ -61,6 +62,7 @@ export default class page extends Component {
         let copy = this.state.rows.slice();
         copy.splice(index, 1);
         this.setState({ rows: copy });
+        toastr.success('Task deleted successfully!', '', { 'closeButton': true, positionClass: 'toast-bottom-right' });
     }
 
     // add task button, opens the dialog functional component
@@ -92,13 +94,13 @@ export default class page extends Component {
 
     //callback from dialog input
     dialogCallback = (data) => {//functional syntax intentional
+        if (data === null) return;
         if (data.action === 'submit') {//submitted
             this.submitTask(data.data); // don't send the action as well
             toastr.success('Task added successfully!', '', { 'closeButton': true, positionClass: 'toast-bottom-right' });
         }
         else if (data.action === 'update') {
             this.updateRow(data.data);
-            toastr.success('Task edited successfully!', '', { 'closeButton': true, positionClass: 'toast-bottom-right' });
         }
         else if (data.action === 'cancel') {//cancelled
             if (data.data.isEdit === false) this.setState({ open: false });
@@ -127,7 +129,7 @@ export default class page extends Component {
                     onClose={() => this.dialogCallback()}>
                     <Dialog
                         parentCallback={this.dialogCallback}
-                        dataFromParent={this.state.task}
+                        dataFromParent={this.state.rows[this.state.editIndex]}
                         edit={true}>
                     </Dialog>
                 </DiaWrap>
