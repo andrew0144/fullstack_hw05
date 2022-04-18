@@ -32,8 +32,28 @@ export default class page extends Component {
                 deadline: moment().format('L')
             },
             rows: [],
-            open: false
+            open: false,
+            editOpen: false,
+            editIndex: 0
         };
+    }
+
+    // opens the edit dialog to edit a row
+    openEdit(index) {
+        this.setState({ editOpen: true });
+        this.setState({ editIndex: index });
+    }
+
+    // updates a row's information
+    updateRow(data) {
+        let copy = this.state.rows.slice();
+        let index = this.state.editIndex;
+        console.log(typeof data);
+        data.title = copy[index].title;
+        data.isComplete = copy[index].isComplete;
+        copy.splice(index, 1, data);
+        this.setState({ rows: copy });
+        this.setState({ editOpen: false });
     }
 
     // deletes a row from rows in the state
@@ -43,7 +63,7 @@ export default class page extends Component {
         this.setState({ rows: copy });
     }
 
-    // add task
+    // add task button, opens the dialog functional component
     addTask() {
         this.setState({ open: true });
     }
@@ -75,8 +95,14 @@ export default class page extends Component {
         if (data.action === 'submit') {//submitted
             this.submitTask(data.data); // don't send the action as well
             toastr.success('Task added successfully!', '', { 'closeButton': true, positionClass: 'toast-bottom-right' });
-        } else if (data.action === 'cancel') {//cancelled
-            this.setState({ open: false });
+        }
+        else if (data.action === 'update') {
+            this.updateRow(data.data);
+            toastr.success('Task edited successfully!', '', { 'closeButton': true, positionClass: 'toast-bottom-right' });
+        }
+        else if (data.action === 'cancel') {//cancelled
+            if (data.data.isEdit === false) this.setState({ open: false });
+            else this.setState({ editOpen: false });
         }
         else if (data.action === 'checkDupTitle') {
             return this.isDuplicateTitle(data.data);
@@ -93,7 +119,16 @@ export default class page extends Component {
                     <Dialog
                         parentCallback={this.dialogCallback}
                         dataFromParent={this.state.task}
-                        addErrors={this.state.errors}>
+                        edit={false}>
+                    </Dialog>
+                </DiaWrap>
+                <DiaWrap
+                    open={this.state.editOpen}
+                    onClose={() => this.dialogCallback()}>
+                    <Dialog
+                        parentCallback={this.dialogCallback}
+                        dataFromParent={this.state.task}
+                        edit={true}>
                     </Dialog>
                 </DiaWrap>
                 {/*master card*/}
@@ -135,7 +170,7 @@ export default class page extends Component {
                                                 <Checkbox checked={row.isComplete ? true : false} onClick={() => this.toggleIsComplete(index)} />
                                             </TableCell>
                                             <TableCell align="center">
-                                                {!row.isComplete ? <div><Button variant="contained" startIcon={<i className="fa fa-pencil-square-o" aria-hidden="true"></i>}>
+                                                {!row.isComplete ? <div><Button onClick={() => this.openEdit(index)} variant="contained" startIcon={<i className="fa fa-pencil-square-o" aria-hidden="true"></i>}>
                                                     UPDATE
                                                 </Button></div> : <div></div>}
                                                 <Button onClick={() => this.deleteRow(index)} variant="contained" color="error" startIcon={<CancelIcon />} sx={{ bgcolor: '#f44336' }}>

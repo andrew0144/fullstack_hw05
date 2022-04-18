@@ -23,15 +23,17 @@ export default function ResponsiveDialog(props) {
     let [descriptionError, setDescriptionError] = React.useState(true);
     let [duplicateTitle, setDuplicateTitle] = React.useState(false);
     let [radioSelection, setRadioSelection] = React.useState("med");
+    let isEdit = props.edit;
 
     //cancel
     let cancel = () => {
         props.parentCallback({
             action: 'cancel',
-            data: {}
+            data: { isEdit: isEdit }
         });
     };
 
+    // adds a task to the page, using the parent callback
     let add = () => {
         if (checkDuplicateTitle()) {
             setDuplicateTitle(true);
@@ -50,6 +52,19 @@ export default function ResponsiveDialog(props) {
         });
     };
 
+    // uses parent callback to edit the information stored in row
+    let edit = () => {
+        if (descriptionError) return;
+        props.parentCallback({
+            action: 'update',
+            data: {
+                description: document.getElementById("description").value,
+                deadline: deadline,
+                priority: radioSelection
+            }
+        });
+    };
+
     // checks if the title textfield is a duplicate title
     let checkDuplicateTitle = () => {
         return props.parentCallback({
@@ -61,12 +76,12 @@ export default function ResponsiveDialog(props) {
     let validateEmpty = () => {
         let taskTitle = document.getElementById("title");
         let taskDescription = document.getElementById("description");
-        if (taskTitle.value === "") setTitleError(true);
+        if (isEdit === false && taskTitle.value === "") setTitleError(true);
         else setTitleError(false);
         if (taskDescription.value === "") setDescriptionError(true);
         else setDescriptionError(false);
 
-        if (checkDuplicateTitle()) {
+        if (isEdit === false && checkDuplicateTitle()) {
             setTitleError(true);
             setDuplicateTitle(true);
         }
@@ -89,16 +104,30 @@ export default function ResponsiveDialog(props) {
         <>
             {/*title*/}
             <DialogTitle sx={{ bgcolor: 'primary.dark', color: 'white' }}>
-                <AddCircleIcon sx={{ verticalAlign: "-5px" }} /> Add Task
+                {isEdit ?
+                    <>
+                        <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit Task
+                    </>
+                    :
+                    <>
+                        <AddCircleIcon sx={{ verticalAlign: "-5px" }} /> Add Task
+                    </>
+                }
             </DialogTitle>
             {/*content*/}
             <DialogContent>
                 {/*title*/}
-                <br /><br />
-                <TextField onChange={validateEmpty} error={titleError} helperText={titleError ? duplicateTitle ? "Task title already exists!" : "Title is Required!" : ''} id="title" label="Title" variant="outlined" fullWidth />
+                {// only show the title if the dialog is NOT an edit diaogue
+                    isEdit ? '' :
+                        <>
+                            <br /><br />
+                            <TextField onChange={validateEmpty} error={titleError} helperText={titleError ? duplicateTitle ? "Task title already exists!" : "Title is Required!" : ''} id="title" label="Title" variant="outlined" fullWidth />
+                        </>
+                }
                 {/*description*/}
                 <br /><br />
                 <TextField onChange={validateEmpty} error={descriptionError} helperText={descriptionError ? "Description is Required!" : ''} id="description" label="Description" variant="outlined" fullWidth />
+
                 {/*deadline*/}
                 <br /><br />
                 <DateTime dataFromParent={deadline} parentCallback={updateDate} />
@@ -122,8 +151,17 @@ export default function ResponsiveDialog(props) {
             {/*action buttons*/}
             <DialogActions sx={{ bgcolor: 'white' }}>
                 {/*add button*/}
-                <Button onClick={add} variant="contained" color='primary' sx={{ width: 100 }}>
-                    <AddCircleIcon />&nbsp;Add
+                <Button onClick={isEdit ? edit : add} variant="contained" color='primary' sx={{ width: 100 }}>
+                    {isEdit ?
+                        <>
+                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                        </>
+                        :
+                        <>
+                            <AddCircleIcon />&nbsp;Add
+                        </>
+                    }
+
                 </Button>
                 {/*cancel button*/}
                 <Button onClick={cancel} variant="contained" color='error' sx={{ bgcolor: '#f44336', width: 100 }}>
