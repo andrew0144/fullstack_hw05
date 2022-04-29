@@ -1,3 +1,6 @@
+# Full Stack Web Development HW05
+This repo was made for my 5th full stack web dev hw assignment. It uses HTML, CSS, JavaScript, React, and various JS libraries. I am leaving the create-react-app template readme below in case instructions on running the app are unclear.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
